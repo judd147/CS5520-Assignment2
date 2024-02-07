@@ -1,6 +1,6 @@
 const Color = {
   primary: 'midnightblue',
-  cardBg: 'dimgray',
+  inputBg: '#4c669f',
   redButton: 'firebrick',
 }
 

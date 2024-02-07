@@ -13,7 +13,7 @@ export default function App() {
       <StatusBar style="auto" />
       <Stack.Navigator initialRouteName="Start">
         <Stack.Screen name="Start" component={Start} options={{ headerShown: false }}/>
-        <Stack.Screen name="Activity" component={Activity} options={{ headerShown: false }}/>
+        <Stack.Screen name="Activity" component={Activity} options={{ headerShown: true }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
