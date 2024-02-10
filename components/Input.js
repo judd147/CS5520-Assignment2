@@ -19,14 +19,14 @@ export default function Input({ email, setEmail, phone, setPhone, setIsValidEmai
 
   // validate input upon state change
   useEffect(() => {
-    // at least have format: x@y.com
-    if (email.length < 7 || !email.includes("@") || !email.includes(".")) {
+    // at least have format: x@y.io
+    if (email.length < 6 || !email.includes("@") || !email.includes(".")) {
       setIsValidEmail(false)
     } else {
       setIsValidEmail(true)
     }
     // must be a 10-digit number
-    if (phone.length < 10) {
+    if (phone.length < 10 || !/^\d+$/.test(phone)) {
       setIsValidPhone(false)
     } else {
       setIsValidPhone(true)
@@ -34,12 +34,12 @@ export default function Input({ email, setEmail, phone, setPhone, setIsValidEmai
   }, [email, phone])
 
   const handleEmailChange = (changedText) => {
-    console.log('User is typing:', changedText)
+    //console.log('User is typing:', changedText)
     setEmail(changedText)
   }
 
   const handlePhoneChange = (changedText) => {
-    console.log('User is typing:', changedText)
+    //console.log('User is typing:', changedText)
     setPhone(changedText)
   }
 

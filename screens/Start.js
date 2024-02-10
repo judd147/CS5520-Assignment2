@@ -11,6 +11,7 @@ export default function Start({ navigation }) {
   const [showEmailError, setShowEmailError] = useState(false)
   const [showPhoneError, setShowPhoneError] = useState(false)
 
+  // Reset input and error messages
   const resetHandler = () => {
     setEmail('')
     setPhone('')
@@ -18,6 +19,7 @@ export default function Start({ navigation }) {
     setShowPhoneError(false)
   }
 
+  // Show errors or navigate to Activity screen
   const startHandler = () => {
     if (isValidEmail && isValidPhone) {
       setShowEmailError(false)
