@@ -10,14 +10,14 @@ const Tab = createBottomTabNavigator();
 export default function Activity({ navigation }) {
   const options = {
     headerTintColor: 'white',
-    headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
+    headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0}, // remove default gap
     headerRight: () => (
       <View style={styles.button}>
         <Button title='Add' onPress={addHandler} color={Color.highlight} />
       </View>
     ),
     tabBarActiveTintColor: Color.highlight,
-    tabBarStyle: { backgroundColor: Color.headerBg, borderTopWidth: 0},
+    tabBarStyle: { backgroundColor: Color.headerBg, borderTopWidth: 0}, // remove default gap
   }
 
   const addHandler = () => {

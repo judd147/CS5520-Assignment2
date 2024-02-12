@@ -6,7 +6,8 @@ const Color = {
   bg: '#6f7a95',
   highlight: 'orange',
   addText: '#264382',
-  addInputBg: '#7e89a4'
+  addInputBg: '#7e89a4',
+  title: '#dce6ff'
 }
 
 export default Color
