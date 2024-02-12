@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Button } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { MaterialIcons } from '@expo/vector-icons'
 import AllActivity from './AllActivity'
 import SpecialActivity from './SpecialActivity'
 import Color from '../components/Color'
@@ -19,6 +20,16 @@ export default function Activity({ navigation }) {
     tabBarActiveTintColor: Color.highlight,
     tabBarStyle: { backgroundColor: Color.headerBg, borderTopWidth: 0}, // remove default gap
   }
+  const allActivityOptions = {
+    tabBarIcon: ({ focused }) => (
+      <MaterialIcons name="directions-run" size={24} color={focused ? Color.highlight : Color.bg}/>
+    ),
+  }
+  const specialActivityOptions = {
+    tabBarIcon: ({ focused }) => (
+      <MaterialIcons name="stars" size={24} color={focused ? Color.highlight : Color.bg}/>
+    ),
+  }
 
   const addHandler = () => {
     navigation.navigate('Add An Activity')
@@ -27,8 +38,8 @@ export default function Activity({ navigation }) {
   return (
     // define the tab navigator and routes
     <Tab.Navigator screenOptions={options}>
-      <Tab.Screen name="All Activities" component={AllActivity} />
-      <Tab.Screen name="Special Activities" component={SpecialActivity} />
+      <Tab.Screen name="All Activities" component={AllActivity} options={allActivityOptions}/>
+      <Tab.Screen name="Special Activities" component={SpecialActivity} options={specialActivityOptions}/>
     </Tab.Navigator>
   )
 }

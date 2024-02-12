@@ -38,23 +38,33 @@ export default function AddActivity({ navigation }) {
     setDuration(changedText)
   }
 
+  const handleDateInput = () => {
+    if (!dateString) {
+      setDateString(date.toLocaleDateString(undefined, dateOptions).replaceAll(',', '')) // set to today if empty
+    }
+    setShow(!show)
+  }
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    setShow(false); // hide calendar after selection
-    setDate(currentDate);
+    console.log(event.type)
+    setShow(false) // hide calendar after selection
+    setDate(currentDate)
     setDateString(currentDate.toLocaleDateString(undefined, dateOptions).replaceAll(',', '')) // format date string
-  };
+  }
 
   const saveHandler = () => {
-    // no empty input or invalid duration
+    // disallow empty input or invalid duration
     if (!value || !duration || !/^\d+$/.test(duration) || duration <= 0 || !dateString) {
       Alert.alert('Invalid Input', 'Please check your input values.')
     } else {
+      // construct a new activity object
+      const special = (value === 'Running' || value === 'Weights') && (duration > 60)
       const newActivity = {
         'title': value,
         'duration': duration + ' min',
         'date': dateString,
-        'special': false
+        'special': special
       }
       setActivities([...activities, newActivity]) // update the context
       navigation.goBack()
@@ -77,12 +87,12 @@ export default function AddActivity({ navigation }) {
         <Text style={styles.text}>Duration (min) *</Text>
         <TextInput style={styles.input} value={duration} onChangeText={handleDurationChange} keyboardType='numeric'/>
         <Text style={styles.text}>Date *</Text>
-        <TextInput style={styles.input} value={dateString} onFocus={() => setShow(true)}/>
+        <TextInput style={styles.input} value={dateString} onPressIn={handleDateInput} onBlur={() => setShow(false)} showSoftInputOnFocus={false}/>
         {show && <DateTimePicker
           testID="dateTimePicker"
           value={date}
           mode={mode}
-          display={'inline'} /* ios */
+          display={'inline'} // ios
           is24Hour={true}
           onChange={handleDateChange}
         />}
