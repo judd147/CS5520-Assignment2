@@ -10,6 +10,7 @@ export default function ActivitiesList({ showAll }) {
   return (
     <View style={styles.container}>
       <FlatList
+        contentContainerStyle={{marginTop: 20}}
         data={data}
         renderItem={({item}) => {
           return (
@@ -31,7 +32,6 @@ export default function ActivitiesList({ showAll }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
     alignItems: 'center',
   },
   itemContainer: {
