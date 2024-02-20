@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import ActivitiesList from '../components/ActivitiesList'
 import Color from '../components/Color'
@@ -6,7 +6,7 @@ import Color from '../components/Color'
 export default function AllActivity() {
   return (
     <View style={styles.container}>
-      <ActivitiesList />
+      <ActivitiesList showAll={true}/>
     </View>
   )
 }
