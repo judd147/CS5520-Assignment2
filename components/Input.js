@@ -57,7 +57,7 @@ export default function Input({ email, setEmail, phone, setPhone, setIsValidEmai
         <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={resetHandler}>
           <Text style={styles.buttonText}>Reset</Text>
         </PressableButton>
-        <PressableButton onPress={startHandler} disabled={!enabled}>
+        <PressableButton customStyle={{backgroundColor: Color.primary}} onPress={startHandler} disabled={!enabled}>
           <Text style={styles.buttonText}>Start</Text>
         </PressableButton>
       </View>

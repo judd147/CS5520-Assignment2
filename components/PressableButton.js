@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 30,
     borderRadius: 7,
-    backgroundColor: Color.primary,
+    backgroundColor: Color.addText,
   },
   pressed: {
     opacity: 0.5

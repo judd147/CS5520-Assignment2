@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, StyleSheet, Button } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import AllActivity from './AllActivity'
 import SpecialActivity from './SpecialActivity'
 import Color from '../components/Color'
+import PressableButton from "../components/PressableButton"
 
 const Tab = createBottomTabNavigator();
 
@@ -13,9 +14,9 @@ export default function Activity({ navigation }) {
     headerTintColor: 'white',
     headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0}, // remove default gap
     headerRight: () => (
-      <View style={styles.button}>
-        <Button title='Add' onPress={addHandler} color={Color.highlight} />
-      </View>
+      <PressableButton customStyle={styles.button} onPress={addHandler}>
+        <AntDesign name="plus" size={24} color="white" />
+      </PressableButton>
     ),
     tabBarActiveTintColor: Color.highlight,
     tabBarStyle: { backgroundColor: Color.headerBg, borderTopWidth: 0}, // remove default gap
@@ -46,6 +47,9 @@ export default function Activity({ navigation }) {
 
 const styles = StyleSheet.create({
   button: {
-    marginRight: 8
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    marginRight: 8,
+    backgroundColor: 'transparent'
   }
 })

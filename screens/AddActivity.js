@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
 import React, { useState, useContext } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
+import PressableButton from "../components/PressableButton"
 
 export default function AddActivity({ navigation }) {
   const [duration, setDuration] = useState(null)
@@ -87,7 +88,16 @@ export default function AddActivity({ navigation }) {
         <Text style={styles.text}>Duration (min) *</Text>
         <TextInput style={styles.input} value={duration} onChangeText={handleDurationChange} keyboardType='numeric'/>
         <Text style={styles.text}>Date *</Text>
-        <TextInput style={styles.input} value={dateString} onPressIn={handleDateInput} onBlur={() => setShow(false)} showSoftInputOnFocus={false}/>
+        <Pressable 
+          style={({ pressed }) => {
+            return [pressed && {opacity: 0.5}]
+          }}
+          onPress={handleDateInput}>
+          {/* make TextInput pressable */}
+          <View pointerEvents="none">
+            <TextInput style={styles.input} value={dateString}/>
+          </View>
+        </Pressable>
         {show && <DateTimePicker
           testID="dateTimePicker"
           value={date}
@@ -97,8 +107,12 @@ export default function AddActivity({ navigation }) {
           onChange={handleDateChange}
         />}
         <View style={styles.button}>
-          <Button title='Cancel' onPress={() => navigation.goBack()} color={Color.redButton}/>
-          <Button title='Save' onPress={saveHandler} color={Color.addText}/>
+          <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={() => navigation.goBack()}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </PressableButton>
+          <PressableButton onPress={saveHandler}>
+            <Text style={styles.buttonText}>Save</Text>
+          </PressableButton>
         </View>
       </View>
     </View>
@@ -119,6 +133,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     margin: 3
+  },
+  buttonText: {
+    color: 'white'
   },
   dropdown: {
     borderRadius: 7,
