@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
 import React, { useContext } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { ActivityContext } from '../ActivityContext'
 import Color from './Color'
 
 export default function ActivitiesList({ showAll }) {
+  const navigation = useNavigation()
   const { activities } = useContext(ActivityContext) // get data from context
   const data = showAll ? activities : activities.filter((item) => item.special) // determine what kind of activities to show
   return (
@@ -14,14 +16,20 @@ export default function ActivitiesList({ showAll }) {
         data={data}
         renderItem={({item}) => {
           return (
-            <View style={styles.itemContainer}>
-              <Text style={styles.title}>{item.title}</Text>
-              <View style={styles.detailContainer}>
-                {item.special && <MaterialIcons name="stars" size={24} color="gold" style={{padding: 2, margin: 3}}/>}
-                <Text style={styles.detail}>{item.date}</Text>
-                <Text style={styles.detail}>{item.duration}</Text>
+            <Pressable 
+            style={({ pressed }) => {
+              return [pressed && {opacity: 0.5}]
+            }}
+            onPress={() => navigation.navigate("Edit")}>
+              <View style={styles.itemContainer}>
+                <Text style={styles.title}>{item.title}</Text>
+                <View style={styles.detailContainer}>
+                  {item.special && <MaterialIcons name="stars" size={24} color="gold" style={{padding: 2, margin: 3}}/>}
+                  <Text style={styles.detail}>{item.date}</Text>
+                  <Text style={styles.detail}>{item.duration}</Text>
+                </View>
               </View>
-            </View>
+            </Pressable>
           )
         }}
       />

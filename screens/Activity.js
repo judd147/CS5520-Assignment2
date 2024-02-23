@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import AllActivity from './AllActivity'
