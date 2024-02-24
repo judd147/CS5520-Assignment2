@@ -20,13 +20,17 @@ export default function ActivitiesList({ showAll }) {
             style={({ pressed }) => {
               return [pressed && {opacity: 0.5}]
             }}
-            onPress={() => navigation.navigate("Edit")}>
+            onPress={() => navigation.navigate("Edit", { // pass activity detail as params
+              activityValue: item.title,
+              durationValue: item.duration,
+              dateValue: item.date,
+            })}>
               <View style={styles.itemContainer}>
                 <Text style={styles.title}>{item.title}</Text>
                 <View style={styles.detailContainer}>
                   {item.special && <MaterialIcons name="stars" size={24} color="gold" style={{padding: 2, margin: 3}}/>}
                   <Text style={styles.detail}>{item.date}</Text>
-                  <Text style={styles.detail}>{item.duration}</Text>
+                  <Text style={styles.detail}>{item.duration + ' min'}</Text>
                 </View>
               </View>
             </Pressable>

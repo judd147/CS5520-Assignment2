@@ -6,13 +6,12 @@ import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
 import PressableButton from "../components/PressableButton"
 
-export default function AddActivity({ navigation }) {
-  const [duration, setDuration] = useState(null)
+export default function AddActivity({ navigation, activityValue, durationValue, dateValue, dateObj }) {
   // activity context
   const { activities, setActivities } = useContext(ActivityContext)
   // states for dropdown picker
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState(activityValue) // CHANGE
   const [items, setItems] = useState([
     {label: 'Walking', value: 'Walking'},
     {label: 'Running', value: 'Running'},
@@ -22,9 +21,10 @@ export default function AddActivity({ navigation }) {
     {label: 'Cycling', value: 'Cycling'},
     {label: 'Hiking', value: 'Hiking'},
   ])
+  const [duration, setDuration] = useState(durationValue) // CHANGE
   // states for datetime picker
-  const [date, setDate] = useState(new Date())
-  const [dateString, setDateString] = useState('')
+  const [date, setDate] = useState(dateObj) // CHANGE
+  const [dateString, setDateString] = useState(dateValue) // CHANGE
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
   const dateOptions = {
@@ -48,7 +48,7 @@ export default function AddActivity({ navigation }) {
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    console.log(event.type)
+    //console.log(event.type)
     setShow(false) // hide calendar after selection
     setDate(currentDate)
     setDateString(currentDate.toLocaleDateString(undefined, dateOptions).replaceAll(',', '')) // format date string
@@ -63,7 +63,8 @@ export default function AddActivity({ navigation }) {
       const special = (value === 'Running' || value === 'Weights') && (duration > 60)
       const newActivity = {
         'title': value,
-        'duration': duration + ' min',
+        'duration': duration,
+        'dateObj': date,
         'date': dateString,
         'special': special
       }

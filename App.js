@@ -7,7 +7,8 @@ import { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons'
 import { ActivityProvider } from './ActivityContext';
 import Activity from './screens/Activity';
-import AddActivity from './screens/AddActivity';
+import Edit from './screens/Edit';
+import Add from './screens/Add';
 import Color from './components/Color';
 import PressableButton from "./components/PressableButton"
 
@@ -25,12 +26,12 @@ export default function App() {
         <Stack.Navigator initialRouteName="Start">
           <Stack.Screen name="Start" component={Start} options={{ headerShown: false }}/>
           <Stack.Screen name="Activity" component={Activity} options={{ headerShown: false }}/>
-          <Stack.Screen name="Add An Activity" component={AddActivity} options={{ 
+          <Stack.Screen name="Add An Activity" component={Add} options={{ 
             headerTintColor: 'white',
             headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
             headerBackTitleVisible: false
             }}/>
-          <Stack.Screen name="Edit" component={AddActivity} options={{ 
+          <Stack.Screen name="Edit" component={Edit} options={{ 
             headerTintColor: 'white',
             headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
             headerBackTitleVisible: false,
