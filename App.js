@@ -10,13 +10,16 @@ import Edit from './screens/Edit';
 import Add from './screens/Add';
 import Color from './components/Color';
 import PressableButton from "./components/PressableButton"
+import { deletefromDB } from "./firebase-files/firebaseHelper";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const deleteHandler = (route) => {
+  const deleteHandler = (route, navigation) => {
+    // TODO ask user to confirm deletion
     const { activityId } = route.params;
-    //console.log(activityId)
+    deletefromDB(activityId) // delete from firestore
+    navigation.goBack()
   }
 
   // define the navigator and routes
@@ -31,12 +34,12 @@ export default function App() {
           headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
           headerBackTitleVisible: false
           }}/>
-        <Stack.Screen name="Edit" component={Edit} options={({ route }) => ({ // pass route prop to the screen options
+        <Stack.Screen name="Edit" component={Edit} options={({ route, navigation }) => ({ // pass screen props to the options
           headerTintColor: 'white',
           headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
           headerBackTitleVisible: false,
           headerRight: () => (
-            <PressableButton customStyle={styles.button} onPress={() => deleteHandler(route)}>
+            <PressableButton customStyle={styles.button} onPress={() => deleteHandler(route, navigation)}>
               <Ionicons name="trash" size={24} color="white" />
             </PressableButton>
           )

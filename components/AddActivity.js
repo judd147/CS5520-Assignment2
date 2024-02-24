@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 //import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
 import PressableButton from "../components/PressableButton"
-import { writeToDB, deletefromDB } from "../firebase-files/firebaseHelper";
+import { writeToDB } from "../firebase-files/firebaseHelper";
 
 export default function AddActivity({ navigation, activityId, activityValue, durationValue, dateValue, dateObj }) {
   //const { activities, setActivities } = useContext(ActivityContext)
@@ -55,6 +55,7 @@ export default function AddActivity({ navigation, activityId, activityValue, dur
   }
 
   const saveHandler = () => {
+    // TODO if Edit screen, update data instead of creating new data
     // disallow empty input or invalid duration
     if (!value || !duration || !/^\d+$/.test(duration) || duration <= 0 || !dateString) {
       Alert.alert('Invalid Input', 'Please check your input values.')
