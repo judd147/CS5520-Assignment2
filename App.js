@@ -3,9 +3,8 @@ import { StyleSheet } from 'react-native'
 import Start from './screens/Start';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons'
-import { ActivityProvider } from './ActivityContext';
+//import { ActivityProvider } from './ActivityContext';
 import Activity from './screens/Activity';
 import Edit from './screens/Edit';
 import Add from './screens/Add';
@@ -15,35 +14,35 @@ import PressableButton from "./components/PressableButton"
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const deleteHandler = () => {
-
+  const deleteHandler = (route) => {
+    const { activityId } = route.params;
+    //console.log(activityId)
   }
+
   // define the navigator and routes
   return (
-    <ActivityProvider>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <Stack.Navigator initialRouteName="Start">
-          <Stack.Screen name="Start" component={Start} options={{ headerShown: false }}/>
-          <Stack.Screen name="Activity" component={Activity} options={{ headerShown: false }}/>
-          <Stack.Screen name="Add An Activity" component={Add} options={{ 
-            headerTintColor: 'white',
-            headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
-            headerBackTitleVisible: false
-            }}/>
-          <Stack.Screen name="Edit" component={Edit} options={{ 
-            headerTintColor: 'white',
-            headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
-            headerBackTitleVisible: false,
-            headerRight: () => (
-              <PressableButton customStyle={styles.button} onPress={deleteHandler}>
-                <Ionicons name="trash" size={24} color="white" />
-              </PressableButton>
-            )
-            }}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ActivityProvider>
+    <NavigationContainer>
+      <StatusBar style="auto" />
+      <Stack.Navigator initialRouteName="Start">
+        <Stack.Screen name="Start" component={Start} options={{ headerShown: false }}/>
+        <Stack.Screen name="Activity" component={Activity} options={{ headerShown: false }}/>
+        <Stack.Screen name="Add An Activity" component={Add} options={{ 
+          headerTintColor: 'white',
+          headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
+          headerBackTitleVisible: false
+          }}/>
+        <Stack.Screen name="Edit" component={Edit} options={({ route }) => ({ // pass route prop to the screen options
+          headerTintColor: 'white',
+          headerStyle: { backgroundColor: Color.headerBg, shadowOpacity: 0},
+          headerBackTitleVisible: false,
+          headerRight: () => (
+            <PressableButton customStyle={styles.button} onPress={() => deleteHandler(route)}>
+              <Ionicons name="trash" size={24} color="white" />
+            </PressableButton>
+          )
+          })}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

@@ -2,16 +2,16 @@ import { StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-nativ
 import React, { useState, useContext } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { ActivityContext } from '../ActivityContext'
+//import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
 import PressableButton from "../components/PressableButton"
+import { writeToDB, deletefromDB } from "../firebase-files/firebaseHelper";
 
-export default function AddActivity({ navigation, activityValue, durationValue, dateValue, dateObj }) {
-  // activity context
-  const { activities, setActivities } = useContext(ActivityContext)
+export default function AddActivity({ navigation, activityId, activityValue, durationValue, dateValue, dateObj }) {
+  //const { activities, setActivities } = useContext(ActivityContext)
   // states for dropdown picker
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(activityValue) // CHANGE
+  const [value, setValue] = useState(activityValue) // initialize with prop
   const [items, setItems] = useState([
     {label: 'Walking', value: 'Walking'},
     {label: 'Running', value: 'Running'},
@@ -21,10 +21,10 @@ export default function AddActivity({ navigation, activityValue, durationValue, 
     {label: 'Cycling', value: 'Cycling'},
     {label: 'Hiking', value: 'Hiking'},
   ])
-  const [duration, setDuration] = useState(durationValue) // CHANGE
+  const [duration, setDuration] = useState(durationValue) // initialize with prop
   // states for datetime picker
-  const [date, setDate] = useState(dateObj) // CHANGE
-  const [dateString, setDateString] = useState(dateValue) // CHANGE
+  const [date, setDate] = useState(dateObj) // initialize with prop
+  const [dateString, setDateString] = useState(dateValue) // initialize with prop
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
   const dateOptions = {
@@ -35,7 +35,7 @@ export default function AddActivity({ navigation, activityValue, durationValue, 
   };
 
   const handleDurationChange = (changedText) => {
-    console.log('User is typing:', changedText)
+    //console.log('User is typing:', changedText)
     setDuration(changedText)
   }
 
@@ -68,7 +68,8 @@ export default function AddActivity({ navigation, activityValue, durationValue, 
         'date': dateString,
         'special': special
       }
-      setActivities([...activities, newActivity]) // update the context
+      //setActivities([...activities, newActivity]) // update the context
+      writeToDB(newActivity) // write to firebase
       navigation.goBack()
     }
   }
