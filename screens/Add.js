@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import AddActivity from "../components/AddActivity";
 
-export default function Add({ navigation }) {
+export default function Add({ route, navigation }) {
   return (
     <AddActivity
+      route={route}
       navigation={navigation}
       activityValue={null}
       durationValue={null}
@@ -13,5 +13,3 @@ export default function Add({ navigation }) {
     />
   );
 }
-
-const styles = StyleSheet.create({});

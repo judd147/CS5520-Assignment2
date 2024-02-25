@@ -2,12 +2,14 @@ import { StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-nativ
 import React, { useState, useContext } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import Checkbox from 'expo-checkbox'
 //import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
 import PressableButton from "../components/PressableButton"
-import { writeToDB } from "../firebase-files/firebaseHelper";
+import { writeToDB, updateDB } from "../firebase-files/firebaseHelper";
 
-export default function AddActivity({ navigation, activityId, activityValue, durationValue, dateValue, dateObj }) {
+export default function AddActivity({ route, navigation, activityId, activityValue, 
+  durationValue, dateValue, dateObj, specialValue }) {
   //const { activities, setActivities } = useContext(ActivityContext)
   // states for dropdown picker
   const [open, setOpen] = useState(false)
@@ -33,6 +35,8 @@ export default function AddActivity({ navigation, activityId, activityValue, dur
     month: "short",
     day: "numeric",
   };
+  // checkbox state
+  const [checked, setChecked] = useState(false)
 
   const handleDurationChange = (changedText) => {
     //console.log('User is typing:', changedText)
@@ -55,11 +59,10 @@ export default function AddActivity({ navigation, activityId, activityValue, dur
   }
 
   const saveHandler = () => {
-    // TODO if Edit screen, update data instead of creating new data
     // disallow empty input or invalid duration
     if (!value || !duration || !/^\d+$/.test(duration) || duration <= 0 || !dateString) {
       Alert.alert('Invalid Input', 'Please check your input values.')
-    } else {
+    } else if (route.name === 'Add An Activity') {
       // construct a new activity object
       const special = (value === 'Running' || value === 'Weights') && (duration > 60)
       const newActivity = {
@@ -72,6 +75,29 @@ export default function AddActivity({ navigation, activityId, activityValue, dur
       //setActivities([...activities, newActivity]) // update the context
       writeToDB(newActivity) // write to firebase
       navigation.goBack()
+    } else if (route.name === 'Edit') {
+      const special = (value === 'Running' || value === 'Weights') && (duration > 60)
+      const newActivity = {
+        'title': value,
+        'duration': duration,
+        'dateObj': date,
+        'date': dateString,
+        'special': checked ? false : special // if user approves, unmark special; if previously approved, mark special again
+      }
+      // alert user to save changes
+      Alert.alert('Important', 'Are you sure you want to save these changes?', [
+        {
+          text: 'No',
+          onPress: undefined
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            updateDB(activityId, newActivity) // update firebase
+            navigation.goBack()
+          }
+        }
+      ])
     }
   }
 
@@ -109,13 +135,23 @@ export default function AddActivity({ navigation, activityId, activityValue, dur
           is24Hour={true}
           onChange={handleDateChange}
         />}
-        <View style={styles.button}>
-          <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </PressableButton>
-          <PressableButton onPress={saveHandler}>
-            <Text style={styles.buttonText}>Save</Text>
-          </PressableButton>
+        <View style={styles.bottomContainer}>
+          {specialValue && route.name === 'Edit' && <View style={styles.checkboxContainer}>
+            <Text style={styles.text}>This item is marked as special. Select the checkbox if you would like to approve it.</Text>
+            <Checkbox
+              value={checked}
+              onValueChange={() => setChecked(!checked)}
+              style={styles.checkbox}>
+            </Checkbox>
+          </View>}
+          <View style={styles.button}>
+            <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </PressableButton>
+            <PressableButton onPress={saveHandler}>
+              <Text style={styles.buttonText}>Save</Text>
+            </PressableButton>
+          </View>
         </View>
       </View>
     </View>
@@ -159,8 +195,20 @@ const styles = StyleSheet.create({
     backgroundColor: Color.addInputBg,
     marginBottom: 25 // enforce seperation between inputs
   },
+  bottomContainer: {
+    marginTop: 250,
+  },
+  checkboxContainer: {
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  checkbox: {
+    alignSelf: 'center',
+    borderColor: Color.addText,
+    margin: 5,
+  },
   button: {
-    marginTop: 250, // place buttons at bottom
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   }

@@ -42,6 +42,7 @@ export default function ActivitiesList({ showAll }) {
               activityValue: item.title,
               durationValue: item.duration,
               dateValue: item.date,
+              specialValue: item.special
             })}>
               <View style={styles.itemContainer}>
                 <Text style={styles.title}>{item.title}</Text>

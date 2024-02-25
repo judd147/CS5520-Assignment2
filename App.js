@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Start from './screens/Start';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,10 +16,21 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const deleteHandler = (route, navigation) => {
-    // TODO ask user to confirm deletion
-    const { activityId } = route.params;
-    deletefromDB(activityId) // delete from firestore
-    navigation.goBack()
+    // alert user to confirm deletion
+    Alert.alert('Delete', 'Are you sure you want to delete this item?', [
+      {
+        text: 'No',
+        onPress: undefined
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          const { activityId } = route.params;
+          deletefromDB(activityId) // delete from firestore
+          navigation.goBack()
+        }
+      }
+    ])
   }
 
   // define the navigator and routes
