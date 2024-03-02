@@ -1,17 +1,19 @@
-import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
 import React, { useState, useContext } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { ActivityContext } from '../ActivityContext'
+import Checkbox from 'expo-checkbox'
+//import { ActivityContext } from '../ActivityContext'
 import Color from '../components/Color'
+import PressableButton from "../components/PressableButton"
+import { writeToDB, updateDB } from "../firebase-files/firebaseHelper";
 
-export default function AddActivity({ navigation }) {
-  const [duration, setDuration] = useState(null)
-  // activity context
-  const { activities, setActivities } = useContext(ActivityContext)
+export default function AddActivity({ route, navigation, activityId, activityValue, 
+  durationValue, dateValue, dateObj, specialValue }) {
+  //const { activities, setActivities } = useContext(ActivityContext)
   // states for dropdown picker
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState(activityValue) // initialize with prop
   const [items, setItems] = useState([
     {label: 'Walking', value: 'Walking'},
     {label: 'Running', value: 'Running'},
@@ -21,9 +23,10 @@ export default function AddActivity({ navigation }) {
     {label: 'Cycling', value: 'Cycling'},
     {label: 'Hiking', value: 'Hiking'},
   ])
+  const [duration, setDuration] = useState(durationValue) // initialize with prop
   // states for datetime picker
-  const [date, setDate] = useState(new Date())
-  const [dateString, setDateString] = useState('')
+  const [date, setDate] = useState(dateObj) // initialize with prop
+  const [dateString, setDateString] = useState(dateValue) // initialize with prop
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
   const dateOptions = {
@@ -32,9 +35,11 @@ export default function AddActivity({ navigation }) {
     month: "short",
     day: "numeric",
   };
+  // checkbox state
+  const [checked, setChecked] = useState(false)
 
   const handleDurationChange = (changedText) => {
-    console.log('User is typing:', changedText)
+    //console.log('User is typing:', changedText)
     setDuration(changedText)
   }
 
@@ -47,7 +52,7 @@ export default function AddActivity({ navigation }) {
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    console.log(event.type)
+    //console.log(event.type)
     setShow(false) // hide calendar after selection
     setDate(currentDate)
     setDateString(currentDate.toLocaleDateString(undefined, dateOptions).replaceAll(',', '')) // format date string
@@ -57,17 +62,42 @@ export default function AddActivity({ navigation }) {
     // disallow empty input or invalid duration
     if (!value || !duration || !/^\d+$/.test(duration) || duration <= 0 || !dateString) {
       Alert.alert('Invalid Input', 'Please check your input values.')
-    } else {
+    } else if (route.name === 'Add An Activity') {
       // construct a new activity object
       const special = (value === 'Running' || value === 'Weights') && (duration > 60)
       const newActivity = {
         'title': value,
-        'duration': duration + ' min',
+        'duration': duration,
+        'dateObj': date,
         'date': dateString,
         'special': special
       }
-      setActivities([...activities, newActivity]) // update the context
+      //setActivities([...activities, newActivity]) // update the context
+      writeToDB(newActivity) // write to firebase
       navigation.goBack()
+    } else if (route.name === 'Edit') {
+      const special = (value === 'Running' || value === 'Weights') && (duration > 60)
+      const newActivity = {
+        'title': value,
+        'duration': duration,
+        'dateObj': date,
+        'date': dateString,
+        'special': checked ? false : special // if user approves, unmark special; if previously approved, mark special again
+      }
+      // alert user to save changes
+      Alert.alert('Important', 'Are you sure you want to save these changes?', [
+        {
+          text: 'No',
+          onPress: undefined
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            updateDB(activityId, newActivity) // update firebase
+            navigation.goBack()
+          }
+        }
+      ])
     }
   }
 
@@ -87,7 +117,16 @@ export default function AddActivity({ navigation }) {
         <Text style={styles.text}>Duration (min) *</Text>
         <TextInput style={styles.input} value={duration} onChangeText={handleDurationChange} keyboardType='numeric'/>
         <Text style={styles.text}>Date *</Text>
-        <TextInput style={styles.input} value={dateString} onPressIn={handleDateInput} onBlur={() => setShow(false)} showSoftInputOnFocus={false}/>
+        <Pressable 
+          style={({ pressed }) => {
+            return [pressed && {opacity: 0.5}]
+          }}
+          onPress={handleDateInput}>
+          {/* make TextInput pressable */}
+          <View pointerEvents="none">
+            <TextInput style={styles.input} value={dateString}/>
+          </View>
+        </Pressable>
         {show && <DateTimePicker
           testID="dateTimePicker"
           value={date}
@@ -96,9 +135,23 @@ export default function AddActivity({ navigation }) {
           is24Hour={true}
           onChange={handleDateChange}
         />}
-        <View style={styles.button}>
-          <Button title='Cancel' onPress={() => navigation.goBack()} color={Color.redButton}/>
-          <Button title='Save' onPress={saveHandler} color={Color.addText}/>
+        <View style={styles.bottomContainer}>
+          {specialValue && route.name === 'Edit' && <View style={styles.checkboxContainer}>
+            <Text style={styles.text}>This item is marked as special. Select the checkbox if you would like to approve it.</Text>
+            <Checkbox
+              value={checked}
+              onValueChange={() => setChecked(!checked)}
+              style={styles.checkbox}>
+            </Checkbox>
+          </View>}
+          <View style={styles.button}>
+            <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </PressableButton>
+            <PressableButton onPress={saveHandler}>
+              <Text style={styles.buttonText}>Save</Text>
+            </PressableButton>
+          </View>
         </View>
       </View>
     </View>
@@ -120,6 +173,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 3
   },
+  buttonText: {
+    color: 'white'
+  },
   dropdown: {
     borderRadius: 7,
     backgroundColor: Color.addInputBg,
@@ -139,8 +195,20 @@ const styles = StyleSheet.create({
     backgroundColor: Color.addInputBg,
     marginBottom: 25 // enforce seperation between inputs
   },
+  bottomContainer: {
+    marginTop: 250,
+  },
+  checkboxContainer: {
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  checkbox: {
+    alignSelf: 'center',
+    borderColor: Color.addText,
+    margin: 5,
+  },
   button: {
-    marginTop: 250, // place buttons at bottom
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   }

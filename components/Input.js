@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import PressableButton from "./PressableButton"
 import Error from './Error'
 import Color from './Color'
 
@@ -53,8 +54,12 @@ export default function Input({ email, setEmail, phone, setPhone, setIsValidEmai
       <Error showError={showPhoneError} keyword='phone number'/>
       
       <View style={styles.button}>
-        <Button title='Reset' onPress={resetHandler} color={Color.redButton}/>
-        <Button title='Start' onPress={startHandler} disabled={!enabled}/>
+        <PressableButton customStyle={{backgroundColor: Color.redButton}} onPress={resetHandler}>
+          <Text style={styles.buttonText}>Reset</Text>
+        </PressableButton>
+        <PressableButton customStyle={{backgroundColor: Color.primary}} onPress={startHandler} disabled={!enabled}>
+          <Text style={styles.buttonText}>Start</Text>
+        </PressableButton>
       </View>
     </View>
   )
@@ -72,6 +77,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  buttonText: {
+    color: 'white'
+  },
   input: {
     borderWidth: 2,
     borderColor: Color.primary,
@@ -82,6 +90,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.inputBg
   },
   button: {
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   }
